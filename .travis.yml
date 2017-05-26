@@ -3,39 +3,17 @@ cache:
     - $HOME/.ivy2
     - $HOME/.sbt
 deploy:
-  -
-    file: target/debian/bintray.json
-    key: $BINTRAY_KEY
-    on:
-      tags: true
-    provider: bintray
-    skip_cleanup: true
-    user: pauldraper
-  -
-    api_key: $GITHUB_AUTH
-    file:
-      - admin/target/*.deb
-      - worker/target/**/*.jar
-    file_glob: true
-    on:
-      tags: true
-    provider: releases
-    skip_cleanup: true
+  file: target/debian/bintray.json
+  key: $BINTRAY_KEY
+  provider: bintray
+  skip_cleanup: true
+  user: pauldraper
+  on:
+    branch: publish
 git:
   depth: 1
 jdk:
   - oraclejdk8
 language: scala
 script:
-  - '[ "$TRAVIS_PULL_REQUEST" != false ] || export SBT_OPTS=-Dbuild.version=${TRAVIS_TAG:-$TRAVIS_BRANCH-SNAPSHOT}'
-  - |
-    if [ "$TRAVIS_SECURE_ENV_VARS" == true ]; then
-      echo "$PGP_SECRET" | base64 --decode | gpg --import
-      if [ -z "$TRAVIS_TAG" ]; then
-          sbt 'all admin/debian:packageBin worker/publishSigned'
-      else
-          sbt 'all debian:bintrayDescriptor admin/debian:packageBin worker/packageBin docs:compile test' 'sonatypeOpen piezo-$TRAVIS_TAG' worker/publishSigned sonatypeReleaseAll
-      fi
-    else
-      sbt 'all docs:compile test'
-    fi
+  - sbt 'all debian:bintrayDescriptor admin/debian:packageBin'

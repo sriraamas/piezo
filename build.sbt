@@ -16,7 +16,7 @@ inThisBuild(Seq(
   organization := "com.lucidchart",
   scalaVersion := "2.11.8",
   scmInfo := Some(ScmInfo(url("https://github.com/lucidsoftware/piezo"), "scm:git:git@github.com:lucidsoftware/piezo.git")),
-  version := sys.props.getOrElse("build.version", "0-SNAPSHOT")
+  version := "1.26" // sys.props.getOrElse("build.version", "0-SNAPSHOT")
 ))
 
 val bintrayDescriptor = taskKey[File]("Descriptor for TravisCI release to Bintray")
@@ -25,7 +25,7 @@ bintrayDescriptor in (ThisBuild, Debian) := {
   val json = Json.obj(
     "files" -> Json.arr(
       Json.obj(
-        "includePattern" -> ".*/(.)(.*\\.deb)",
+        "includePattern" -> "admin/target/(.)(.*\\.deb)",
         "matrixParams" -> Json.obj(
           "deb_architecture" -> "amd64,i386",
           "deb_component" -> "main",
