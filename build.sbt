@@ -1,5 +1,5 @@
 import com.lucidchart.sbtcross.{Axis, CrossableProject, DefaultAxis}
-import com.typesafe.sbt.packager.archetypes.ServerLoader
+// import com.typesafe.sbt.packager.archetypes.ServerLoader
 import play.api.libs.json.Json
 
 val distributionAxis = new DefaultAxis {
@@ -7,18 +7,18 @@ val distributionAxis = new DefaultAxis {
   def major(version: String) = version
 }
 
-lazy val admin = project.dependsOn(worker_2_11).settings(scalaVersion := "2.11.8")
+lazy val admin = project.dependsOn(worker_2_12).settings(scalaVersion := "2.12.11")
 // there's probably a better way to also produce a Systemd deb
-lazy val `admin-xenial` = admin.copy(id = "admin-xenial").settings(
-  serverLoading in Debian := ServerLoader.Systemd,
-  target := baseDirectory.value / "target-xenial",
-  scalaVersion := "2.11.8"
-)
-lazy val `admin-bionic` = admin.copy(id = "admin-bionic").settings(
-  serverLoading in Debian := ServerLoader.Systemd,
-  target := baseDirectory.value / "target-bionic",
-  scalaVersion := "2.11.8"
-)
+// lazy val `admin-xenial` = admin.copy(id = "admin-xenial").settings(
+//   serverLoading in Debian := ServerLoader.Systemd,
+//   target := baseDirectory.value / "target-xenial",
+//   scalaVersion := "2.11.8"
+// )
+// lazy val `admin-bionic` = admin.copy(id = "admin-bionic").settings(
+//   serverLoading in Debian := ServerLoader.Systemd,
+//   target := baseDirectory.value / "target-bionic",
+//   scalaVersion := "2.11.8"
+// )
 
 lazy val commonSettings = Seq(publishTo := sonatypePublishToBundle.value)
 
@@ -57,8 +57,8 @@ bintrayDescriptor in (ThisBuild, Debian) := {
   val json = Json.obj(
     "files" -> Json.arr(
       files((packageBin in (admin, Debian)).value, "trusty"),
-      files((packageBin in (`admin-xenial`, Debian)).value, "xenial"),
-      files((packageBin in (`admin-bionic`, Debian)).value, "bionic")
+      // files((packageBin in (`admin-xenial`, Debian)).value, "xenial"),
+      // files((packageBin in (`admin-bionic`, Debian)).value, "bionic")
     ),
     "package" -> Json.obj(
       "name" -> "piezo",
